@@ -1,7 +1,7 @@
 # dojo-fmeserver-portal
 The municipality of Gävles FME portal - A configurable webb portal 
 developed using ESRI:s JavaScript API, Dojo Toolkit and FMEServer.js.
-The portal is a Dojo widget that can be integrated in a mapping 
+The portal is a dojo widget that can be integrated in a mapping 
 application. The purpose of the widget is to allow 
 quick setup of customized portals for easy access to
 FME workspaces stored on FME-server.
@@ -17,7 +17,7 @@ FME workspaces stored on FME-server.
 - Supports FME-server service types Data Download, Job Submitter and Data Streaming.
 - Access workspace metadata and see running and queued jobs on FME-server
 
-<img src="app-0.png" style="width:100%;max-width:800px;">
+<img src="./images/app-0.png" style="width:100%;">
 
 ## Table of Contents
 
@@ -36,15 +36,15 @@ FME workspaces stored on FME-server.
 - License
 
 ## Examples
-**The examples are connected to a **[Safe Software](https://www.safe.com)** demo FME-server.**
+**The examples are connected to a [Safe Software](https://www.safe.com) demo FME-server.**
 
-**[Demo 1 - Automatic sign-in using a token, 4 workspaces configured](https://gis.gavle.se/pubs/fmeportal/examples/demo2.html)**
+**[Demo 1 - Automatic sign-in using a token, four workspaces configured](https://gis.gavle.se/pubs/fmeportal/examples/demo2.html)**
 
 **[Demo 2 - Authenticate using a token or credentials with possibility to change server url and admin-mode](https://gis.gavle.se/pubs/fmeportal/examples/demo1.html)**
 
 ## Usage
 
-Setup a package pointing to the widget location in the dojoConfig. There is an optimized built version of the widget in the **dist** folder.
+Define a package pointing to the widget location in the dojoConfig. Use the src for development or the optimized built version of the widget in the **dist** folder.
 
 Include ESRI:s JavaScript API and FME-Server JavaScript Library. Remember to set dojoConfig before loading Dojo.
 
@@ -66,7 +66,7 @@ Include ESRI:s JavaScript API and FME-Server JavaScript Library. Remember to set
     <script src="../src/lib/FMEServer.js"></script>
 
 
-Initialize the FMEPortal widget by passing a map (optional) and a configuration object as the first argument and a DOM-node or a DOM id as the second.
+Initialize the widget by passing a map (optional), a configuration object and a DOM-node or a DOM id to the widget constructor.
 
 Example: 
 
@@ -89,6 +89,18 @@ Example:
             }, "fmeportal");
         });
     </script>
+
+
+**CSS**
+
+All symbols except the loader gif are from Google Material Icons. 
+ESRI:s JavaScript API require esri.css for the map and a dijit theme 
+like calcite, tundra, claro etc. to render the forms correctly. 
+More information about esri css [here](https://developers.arcgis.com/javascript/3/jshelp/css.html).
+
+    <link rel="stylesheet" href="https://js.arcgis.com/3.18/esri/css/esri.css">
+    <link rel="stylesheet" href="https://js.arcgis.com/3.18/esri/themes/calcite/dijit/calcite.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
 ## Configuration
 For a full configuration example, see **src/app/FMEPortal/Config**.
@@ -113,13 +125,13 @@ Example:
            "server": {
                "adminMode": false,
                "token": {
-                  "token": "568c604bc1f235bbe137c514e7c61a8436043070",
+                  "token": "568c604bc1f235bbe137sdfgh32h45h45bh",
                   "time": 480,
                   "unit": "minute",
                   "showTokenTab": true,
                   "autoLogin": false
                },
-               "url": "https://demos-safe-software.fmecloud.com",
+               "url": "https://my-fmeserver.com",
                "version": "v2",
                "showSettingsTab": true
         }
@@ -129,12 +141,12 @@ Example:
 True/False
 
 If adminMode is enabled, the portal will query FME-server for all repositorys and workspaces the authenticated user has access too and populate two dropdowns.
-<img src="admin-mode-0.png" width="350">
+<img src="./images/admin-mode-0.png" width="350">
 
 Additionally, workspace forms will have two extra options next to the Run button:
  - A service type selector allowing the user to run a workspace using a specific registered service 
  - A button to show metadata about the workspace.
-<img src="admin-mode-1.png" width="350">
+<img src="./images/admin-mode-1.png" width="350">
 
 If adminMode is disabled, specific workspaces to include in the portal must be set using the **includedWorkspaces** option.
 
@@ -175,7 +187,7 @@ Array of workspaces to include in the portal, each item must have:
   - **workspace** - Name of the FME-server workspace (including *.fmw)
   - **service** - The registered service type to use when running the workspace, "fmedatadownload", "fmejobsubmitter" and "fmedatastreaming" are supported.
 
-<img src="include-workspaces-0.png" width="350">
+<img src="./images/include-workspaces-0.png" width="350">
 
 Example:
 

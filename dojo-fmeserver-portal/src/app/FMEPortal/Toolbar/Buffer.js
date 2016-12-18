@@ -1,10 +1,10 @@
 ﻿/*
- dojo-fmeserver-portal
- https://github.com/gavlepeter/dojo-fmeserver-portal
- @version 1.0
- @author Peter Jäderkvist <peter.jaderkvist@gavle.se>
- @module FMEPortal/Toolbar/Buffer
-*/
+dojo-fmeserver-portal
+https://github.com/gavlepeter/dojo-fmeserver-portal
+@version 1.0
+@author Peter Jäderkvist <peter.jaderkvist@gavle.se>
+@module FMEPortal/Toolbar/Buffer
+ */
 define([
 		'dojo/_base/declare',
 		'dojo/_base/lang',
@@ -13,31 +13,31 @@ define([
 		'dijit/TooltipDialog',
 		'./BufferInput'
 
-], function (
+	], function (
 		declare,
 		lang,
 		domStyle,
 		PopupMenuItem,
 		TooltipDialog,
 		BufferInput) {
-    return declare(PopupMenuItem, {
-        constructor: function (options) {
-            options = options || {};
-            lang.mixin(this, options);
-        },
-        postCreate: function () {
+	return declare(PopupMenuItem, {
+		constructor : function (options) {
+			options = options || {};
+			lang.mixin(this, options);
+		},
+		postCreate : function () {
 
-            this.inherited(arguments);
+			this.inherited(arguments);
 
-            var bufferInput = new BufferInput();
+			var bufferInput = new BufferInput();
 
-            this.popup = new TooltipDialog({
-                style: 'width:200px;',
-                content: bufferInput
-            });
+			this.popup = new TooltipDialog({
+					style : 'width:200px;',
+					content : bufferInput
+				});
 
-            domStyle.set(this.popup.connectorNode, 'display', 'none');
-            this.popup.startup();
-        }
-    });
+			domStyle.set(this.popup.connectorNode, 'display', 'none');
+			this.popup.startup();
+		}
+	});
 });
