@@ -1,0 +1,43 @@
+﻿<div>
+    <h2>${options.settings.fme.general.title}</h2>
+    <div class="${baseClass}-about" data-dojo-attach-point="_about">
+        <i class="material-icons">&#xE88E;</i> ${nls.Widget.About}
+    </div>
+
+    <div data-dojo-attach-point="_loginWrapper">
+        <div data-dojo-attach-point="_loginStatus"></div>
+    </div>
+
+    <div data-dojo-attach-point="_stepOne" style="display:none;">
+        <h3>${nls.Widget.Step1.Title}</h3>
+        <div data-dojo-attach-point="_toolbar"></div>
+    </div>
+
+    <div data-dojo-attach-point="_stepTwo" style="display:none;">
+        <h3>${nls.Widget.Step2.Title}</h3>
+        <div data-dojo-attach-point="_repositorySelector" style="display:none;">${nls.Widget.Step2.Repository} </div>
+        <div data-dojo-attach-point="_workspaceSelector" style="display:none;">${nls.Widget.Step2.Workspace} </div>
+        <div data-dojo-attach-point="_formContent">
+            <div data-dojo-attach-point="_loadingParams" class="${baseClass}-loading">
+                <img src="${loaderAnim}" /> ${nls.Widget.Step2.LoadingParams}
+            </div>
+        </div>
+        <div data-dojo-attach-point="_loadingContent" class="${baseClass}-loading">
+            <img src="${loaderAnim}" />${nls.Widget.Step2.LoadingContent}
+        </div>
+    </div>
+
+    <div data-dojo-attach-point="_stepThree" style="display:none;">
+        <h3>${nls.Widget.Step3.Title}</h3>
+        <div data-dojo-attach-point="_resultLoading" class="${baseClass}-loading">
+            <img src="${loaderAnim}" /> ${nls.Widget.Step3.LoadingResult}
+        </div>
+        <div data-dojo-attach-point="_resetResultCount" style="display:none;" class="${baseClass}-result-clear">
+            <i class="material-icons" style="vertical-align:middle;font-size: 20px;">&#xE872;</i> ${nls.Widget.Step3.ClearResult}
+        </div>
+        <div class="${baseClass}-results" data-dojo-attach-point="_resultView">
+            
+        </div>
+        <span data-dojo-attach-point="_noResults">${nls.Widget.Step3.NoTranslationResults}</span>
+    </div>
+</div>

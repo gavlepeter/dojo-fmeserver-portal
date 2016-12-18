@@ -1,0 +1,54 @@
+﻿<div>
+    <div data-dojo-type="dijit/layout/TabContainer" data-dojo-props="controllerWidget: 'dijit.layout.TabController', doLayout:false" data-dojo-attach-point="_tabContainer">
+        <div data-dojo-type="dijit/layout/ContentPane" data-dojo-props="label: '${nls.Login.Tabs.Credentials.Title}', title: '${nls.Login.Tabs.Credentials.Title}'">
+            <span>${nls.Login.Tabs.Credentials.Info}</span>
+            <div data-dojo-type="dijit/form/Form" data-dojo-attach-point="_fmeLoginForm">
+                <br />
+                <table>
+                    <tr>
+                        <td>${nls.Login.Tabs.Credentials.Username}:</td>
+                        <td><div data-dojo-type="dijit/form/ValidationTextBox" name="username" required="true" data-dojo-attach-point="_fmeUsername"></div></td>
+                    </tr>
+                    <tr>
+                        <td>${nls.Login.Tabs.Credentials.Password}:</td>
+                        <td><div data-dojo-type="dijit/form/ValidationTextBox" name="password" required="true" data-dojo-props="type:'password'" data-dojo-attach-point="_fmePassword"></div></td>
+                    </tr>
+                </table>
+                <div data-dojo-type="dijit/form/Button" data-dojo-attach-point="_login">${nls.Login.Button}</div>
+                <div data-dojo-attach-point="_loginStatus"></div>
+            </div>
+        </div>
+        <div data-dojo-type="dijit/layout/ContentPane" data-dojo-attach-point="_tokenTab" data-dojo-props="label: '${nls.Login.Tabs.Token.Title}', title: '${nls.Login.Tabs.Token.Title}'">
+            <span>${nls.Login.Tabs.Token.Info}</span>
+            <div data-dojo-type="dijit/form/Form" data-dojo-attach-point="_fmeTokenForm">
+                <br />
+                <table>
+                    <tr>
+                        <td>${nls.Login.Tabs.Token.Token}:</td>
+                        <td><div data-dojo-type="dijit/form/ValidationTextBox" name="token" required="true" data-dojo-attach-point="_fmeToken" data-dojo-props="value: '${options.settings.fme.server.token.token}'"></div></td>
+                    </tr>
+                </table>
+            </div>
+            <div data-dojo-type="dijit/form/Button" data-dojo-attach-point="_tokenLogin">${nls.Login.Button}</div>
+            <div data-dojo-attach-point="_tokenStatus"></div>
+        </div>
+        <div data-dojo-type="dijit/layout/ContentPane" data-dojo-attach-point="_settingsTab" data-dojo-props="label: '${nls.Login.Tabs.Settings.Title}', title: '${nls.Login.Tabs.Settings.Title}'">
+            <span>${nls.Login.Tabs.Settings.Info}</span>
+            <br />
+            <table>
+                <tr>
+                    <td>${nls.Login.Tabs.Settings.ServerUrl}:</td>
+                    <td><div data-dojo-type="dijit/form/ValidationTextBox" required="true" data-dojo-props="value: '${options.settings.fme.server.url}'" data-dojo-attach-point="_serverUrl"></div></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>${nls.Login.Tabs.Settings.AdminMode.Info}</td>
+                </tr>
+                <tr>
+                    <td>${nls.Login.Tabs.Settings.AdminMode.Label}:</td>
+                    <td><input data-dojo-type="dijit/form/CheckBox" data-dojo-attach-point="_adminMode" /></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>

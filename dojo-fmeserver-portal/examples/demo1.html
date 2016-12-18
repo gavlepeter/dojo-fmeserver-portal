@@ -1,0 +1,162 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>dojo-fme-portal</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="https://js.arcgis.com/3.18/esri/css/esri.css">
+    <link rel="stylesheet" href="https://js.arcgis.com/3.18/esri/themes/calcite/dijit/calcite.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <script>
+        var dojoConfig = {
+            async: true,
+            packages: [
+                {
+                    'name': 'app',
+                    'location': location.protocol + "//" + location.host + "/src/app"
+                }
+            ]
+        };
+    </script>
+    <style>
+        html, body {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            overflow: hidden;
+        }
+        #map {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+<body class="calcite">
+    <div data-dojo-type="dijit/layout/BorderContainer" data-dojo-props="design:'sidebar', gutters:true, style: 'width:100%;height:100%'">
+        <div data-dojo-type="dijit/layout/ContentPane" data-dojo-props="region: 'left', style:'width:400px'">
+            <div id="fmeportal"></div>
+            <div id="about" style="display:none;">
+                <div style="width:450px;">
+                    <h2>dojo-fmeserver-portal</h2>
+                    <h3>The municipality of Gävles FME portal</h3>
+                    <p>
+                        This configurable widget was developed using Dojo Toolkit, ESRI:s JavaScript API and FMEServer.js.
+                        The purpose of the FMEPortal widget is to allow quick setup of one or many customized portals
+                        for accessing FME workspaces stored on FME-server.
+                    </p>
+                    <p>
+                        The workspaces in this example are from Safe Softwares demo server.
+                        <a href='http://www.safe.com' target="_blank">
+                            http://www.safe.com
+                        </a>
+                    </p>
+                    <i>Author: Peter Jäderkvist at Community Development Gävle.</i>
+                    <h3>
+                        Read more at
+                        <a href='https://github.com/gavlepeter/dojo-fmeserver-portal' target="_blank">
+                            https://github.com/gavlepeter/dojo-fmeserver-portal
+                        </a>
+                    </h3>
+                </div>
+            </div>
+        </div>
+        <div data-dojo-type="dijit/layout/ContentPane" data-dojo-props="region: 'center', style:'padding:0'">
+            <div id="map"></div>
+        </div>
+    </div>
+
+    <script src="https://js.arcgis.com/3.18/"></script>
+    <script src="../dist/lib/FMEServer.js"></script>
+
+    <script>
+        var configuration = {
+            "fme": {
+                "general": {
+                    "id": "portal-1215",
+                    "title": "FME Portal",
+                    "about": document.getElementById("about").innerHTML
+                },
+                "server": {
+                    "adminMode": true,
+                    "token": {
+                        "token": "568c604bc1f235bbe137c514e7c61a8436043070",
+                        "time": 480,
+                        "unit": "minute",
+                        "showTokenTab": true,
+                        "autoLogin": false // No auto-login
+                    },
+                    "url": "https://demos-safe-software.fmecloud.com",
+                    "version": "v2",
+                    "showSettingsTab": true
+                },
+                "uploadSettings": {
+                    "disabledFiles": [".shx", ".prj", ".dbf", ".sbn", ".sbx", ".lock", ".png", ".xml", ".jpg", ".doc", ".docx", ".skp", ".cpg"]
+                },
+                "geometry": {
+                    "parameter": "GEOM",
+                    "format": "geojson"
+                },
+                "includedWorkspaces": [
+                    {
+                        "name": "WKTClip.fmw",
+                        "title": "Safe Software Example - WKT Clip",
+                        "description": "Description of the WKT Clip workspace.",
+                        "repository": "REST-Playground",
+                        "workspace": "WKTClip.fmw",
+                        "service": "fmedatadownload"
+                    },{
+                        "name": "AustinTransport.fmw",
+                        "title": "Safe Software Example - Austin Transport",
+                        "description": "AustinTransport.fmw",
+                        "repository": "REST-Playground",
+                        "workspace": "AustinTransport.fmw",
+                        "service": "fmedatastreaming"
+                    },{
+                        "name": "austinDownload.fmw",
+                        "title": "Safe Software Example - Austin Download",
+                        "description": "austinDownload.fmw",
+                        "repository": "Samples",
+                        "workspace": "austinDownload.fmw",
+                        "service": "fmejobsubmitter"
+                    },{
+                        "name": "easyTranslator.fmw",
+                        "title": "Safe Software Example - Easy Translator",
+                        "description": "easyTranslator.fmw",
+                        "repository": "Samples",
+                        "workspace": "easyTranslator.fmw",
+                        "service": "fmedatadownload"
+                    }
+                ],
+                "customErrors": null
+            },
+            "map": {
+                "drawColor": [0, 132, 168, 0.75],
+                "bufferColor": [0, 0, 0, 0.25],
+                "geometryService": "https://tasks.arcgisonline.com/arcgis/rest/services/Geometry/GeometryServer"
+            }
+        };
+
+        require([
+            "dojo/parser",
+            "app/FMEPortal",
+            "esri/map",
+            "dijit/layout/BorderContainer",
+            "dijit/layout/ContentPane"
+        ], function (parser, FMEPortal, Map) {
+            parser.parse();
+            var map = new Map("map", {
+                basemap: "topo",
+                center: [-123.114166, 49.264549],
+                zoom: 12,
+                minZoom: 12
+            });
+
+            // Pass the map, configuration-object and a domNode to the FMEPortal widget
+            var fmeportal = new FMEPortal({
+                "settings": configuration,
+                "map": map
+            }, "fmeportal");
+        });
+    </script>
+
+</body>
+</html>

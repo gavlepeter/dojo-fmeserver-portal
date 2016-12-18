@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "dojo-fmeserver-portal(1)", "dojo-fmeserver-portal\", "{8CFC55E6-8818-4799-AE91-A4F671CEDCD2}"
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "dojo-fmeserver-portal", "dojo-fmeserver-portal\", "{6D9395AE-7B92-4496-81FB-CF4AA251F9F2}"
 	ProjectSection(WebsiteProperties) = preProject
 		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.0"
 		Debug.AspNetCompiler.VirtualPath = "/localhost_54685"
@@ -34,8 +34,8 @@ Global
 		Debug|Any CPU = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{8CFC55E6-8818-4799-AE91-A4F671CEDCD2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8CFC55E6-8818-4799-AE91-A4F671CEDCD2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6D9395AE-7B92-4496-81FB-CF4AA251F9F2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6D9395AE-7B92-4496-81FB-CF4AA251F9F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

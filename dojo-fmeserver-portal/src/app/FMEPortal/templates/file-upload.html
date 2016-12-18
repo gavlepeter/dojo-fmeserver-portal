@@ -1,0 +1,19 @@
+﻿<div>
+    <fieldset>
+        <legend>${nls.FileUpload.AddFiles} <b>${description}</b></legend>
+        <input data-dojo-attach-point="_uploader" name="uploadedfile" multiple="true" type="file" data-dojo-type="dojox/form/Uploader" data-dojo-props="label: '${nls.FileUpload.SelectFiles}'">
+        <div data-dojo-attach-point="_fileUrl" style="display:inline-block;"></div>
+        <div data-dojo-attach-point="_urlFilelist"></div>
+        <div data-dojo-attach-point="_fileContainer" style="display:none;">
+            <div data-dojo-attach-point="_fileList"></div>
+            <input data-dojo-attach-point="_submit" type="button" label="${nls.FileUpload.Button}" data-dojo-type="dijit/form/Button">
+            <div data-dojo-attach-point="_uploading" style="display:none;">
+                <img src="${loaderAnim}" /> ${nls.FileUpload.Uploading}
+            </div>
+        </div>
+        <div data-dojo-attach-point="_uploadedContainer" style="display:none;">
+            <h3>${nls.FileUpload.SelectTranslationFiles}</h3>
+            <div data-dojo-attach-point="_uploadedFiles" class="fmeportal-uploadedFiles">${nls.FileUpload.NoFiles}</div>
+        </div>
+    </fieldset>
+</div>

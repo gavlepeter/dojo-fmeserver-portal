@@ -1,0 +1,49 @@
+﻿<div>
+    <div data-dojo-attach-point="_geometryTools" style="display:none;">
+        <div data-dojo-type="dijit/form/Button" data-dojo-attach-point="_drawPolygon"><i class="material-icons">&#xE3C9;</i></div>
+        <div data-dojo-type="dijit/form/Button" data-dojo-attach-point="_drawExtent"><i class="material-icons">&#xE25E;</i></div>
+        <div data-dojo-type="dijit/form/Button" data-dojo-attach-point="_clearMap"><i class="material-icons">&#xE872;</i></div>
+        <div data-dojo-type="dijit/form/Button" data-dojo-attach-point="_inputExtent"><i class="material-icons">&#xE56B;</i> Coordinates</div>
+        <div data-dojo-attach-point="_drawnArea"></div>
+        <fieldset data-dojo-attach-point="_inputExtentArea" class='smart-fme-inputextent' data-dojo-type="dijit/Fieldset" data-dojo-props="toggleable:false, style:'margin-top: 15px; display:none;'">
+            <legend>${nls.Toolbar.InputExtent.Title}:</legend>
+            <div data-dojo-type="dijit/form/Form" data-dojo-attach-point="_inputForm">
+                <table>
+                    <tr>
+                        <td>
+                            ${nls.Toolbar.InputExtent.xmin}:
+                        </td>
+                        <td>
+                            <div data-dojo-type="dijit/form/NumberTextBox" data-dojo-attach-point="_xmin" data-dojo-props="value: 0, invalidMessage: '${nls.Toolbar.InputExtent.Validation.Coordinates}', placeholder: '${nls.Toolbar.InputExtent.Input} ${nls.Toolbar.InputExtent.xmin}', style: 'width:110px'"></div>
+                        </td>
+                        <td>
+                            ${nls.Toolbar.InputExtent.xmax}:
+                        </td>
+                        <td>
+                            <div data-dojo-type="dijit/form/NumberTextBox" data-dojo-attach-point="_xmax" data-dojo-props="value: 0, invalidMessage: '${nls.Toolbar.InputExtent.Validation.Coordinates}', placeholder: '${nls.Toolbar.InputExtent.Input} ${nls.Toolbar.InputExtent.xmax}', style: 'width:110px'"></div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            ${nls.Toolbar.InputExtent.ymin}:
+                        </td>
+                        <td>
+                            <div data-dojo-type="dijit/form/NumberTextBox" data-dojo-attach-point="_ymin" data-dojo-props="value: 0, invalidMessage: '${nls.Toolbar.InputExtent.Validation.Coordinates}', placeholder: '${nls.Toolbar.InputExtent.Input} ${nls.Toolbar.InputExtent.ymin}', style: 'width:110px'"></div>
+                        </td>
+                        <td>
+                            ${nls.Toolbar.InputExtent.ymax}:
+                        </td>
+                        <td>
+                            <div data-dojo-type="dijit/form/NumberTextBox" data-dojo-attach-point="_ymax" data-dojo-props="value: 0, invalidMessage: '${nls.Toolbar.InputExtent.Validation.Coordinates}', placeholder: '${nls.Toolbar.InputExtent.Input} ${nls.Toolbar.InputExtent.ymax}', style: 'width:110px'"></div>
+                        </td>
+                    </tr>
+                </table>
+                <div data-dojo-type="dijit/form/Button" data-dojo-props="style:'float: right;margin-right: 15px;'" data-dojo-attach-point="_drawInputExtent">${nls.Toolbar.InputExtent.ButtonDraw}</div>
+            </div>
+        </fieldset>
+    </div>
+    <div data-dojo-attach-point="_noTools">
+        ${nls.Toolbar.Message}
+    </div>
+</div>
+
