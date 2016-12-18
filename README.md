@@ -21,19 +21,19 @@ FME workspaces stored on FME-server.
 
 ## Table of Contents
 
-- Examples
-- Usage
-- Configuration
-   - Server
-   - Uploads
-   - Included Workspaces
-   - Custom error messages
-   - Geometry
-   - Map
-- Internationalization
-- History
-- Credits
-- License
+- [Examples](#examples)
+- [Usage](#usage)
+- [Configuration](#configuration)
+   - [Server](#server)
+   - [Uploads](#uploads)
+   - [Included Workspaces](#included-workspaces)
+   - [Custom error messages](#custom-error-messages)
+   - [Geometry](#geometry)
+   - [Map](#map)
+- [Internationalization](#internationalization)
+- [History](#history)
+- [Credits](#credits)
+- [License](#license)
 
 ## Examples
 **The examples are connected to a [Safe Software](https://www.safe.com) demo FME-server.**
