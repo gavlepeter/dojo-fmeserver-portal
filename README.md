@@ -177,7 +177,7 @@ Example:
        "disabledFiles": [".shx", ".prj", ".dbf", ".sbn", ".sbx", ".lock", ".png", ".xml", ".jpg", ".doc", ".docx", ".skp"]
     }
 
-### Include workspaces
+### Included workspaces
 
 Array of workspaces to include in the portal, each item must have:
 
