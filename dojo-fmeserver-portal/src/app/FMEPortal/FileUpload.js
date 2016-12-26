@@ -57,18 +57,19 @@ define([
 
 			this.options = options;
 			this.nls = resourceStrings;
+			this.FMERestManager = options.restManager;
 			this.loaderAnim = require.toUrl("./images/loader.gif");
 
 			this.set("paramname", this.options.parameter.name);
 			this.set("description", this.options.parameter.description);
 			this.set("disabledFiles", this.options.settings.fme.uploadSettings.disabledFiles);
 
-			FMEServer.getSession(this.options.repository, this.options.workspace, lang.hitch(this, function (json) {
-					if (json.serviceResponse.files) {
-						this.set("session", json.serviceResponse.session);
-						this.set("path", json.serviceResponse.files.folder[0].path);
-					}
-				}));
+			this.FMERestManager.getSession(this.options.repository, this.options.workspace).then(lang.hitch(this, function (json) {
+				if (json.serviceResponse.files) {
+					this.set("session", json.serviceResponse.session);
+					this.set("path", json.serviceResponse.files.folder[0].path);
+				}
+			}));
 		},
 
 		postCreate : function () {
@@ -96,12 +97,12 @@ define([
 				on(this._submit, 'click', lang.hitch(this, function () {
 						Utils.show(this._uploading);
 						var uploader = query('input', this._uploader.domNode)[0];
-						FMEServer.dataUpload(this.options.repository, this.options.workspace, uploader, this.get('session'), lang.hitch(this, this._processUploadedFiles));
+						this.FMERestManager.dataUpload(this.options.repository, this.options.workspace, uploader, this.get('session')).then(lang.hitch(this, this._processUploadedFiles));
 					})));
 
 		},
 
-		_processUploadedFiles : function (json) {
+		_processUploadedFiles: function (json) {
 
 			// Clear list of uploaded files
 			if (this._uploadedFilesList && this._uploadedFilesList.length > 0) {

@@ -1,6 +1,6 @@
 # dojo-fmeserver-portal
 The municipality of Gävles FME portal - A configurable webb portal 
-developed using ESRI:s JavaScript API, Dojo Toolkit and FMEServer.js.
+developed using Dojo and ESRI:js JavaScript API.
 The portal is a dojo widget that can be integrated in a mapping 
 application. The purpose of the widget is to allow 
 quick setup of customized portals for easy access to
@@ -46,10 +46,7 @@ FME workspaces stored on FME-server.
 
 Define a package pointing to the widget location in the dojoConfig. Use the src for development or the optimized built version of the widget in the **dist** folder.
 
-Include ESRI:s JavaScript API and FME-Server JavaScript Library. Remember to set dojoConfig before loading Dojo.
-
-**The FME-Server JavaScript library included in this repo has been slightly modified to support multiple file uploads and to better support international characters.**
-
+Include ESRI:s JavaScript API or Dojo. Remember to set dojoConfig before loading Dojo.
 
      <script>
         var dojoConfig = {
@@ -63,8 +60,6 @@ Include ESRI:s JavaScript API and FME-Server JavaScript Library. Remember to set
        };
     </script>
     <script src="https://js.arcgis.com/3.18/"></script>
-    <script src="../src/lib/FMEServer.js"></script>
-
 
 Initialize the widget by passing a map (optional), a configuration object and a DOM-node or a DOM id to the widget constructor.
 
@@ -161,7 +156,7 @@ If adminMode is disabled, specific workspaces to include in the portal must be s
 The FME-server base url.
 
 #### version
-The API version, currently only **v2** supported.
+The API version, currently v2 and v3 are supported.
 
 #### showSettingsTab
 True/False
@@ -256,7 +251,9 @@ More on Dojo internationalization here: https://dojotoolkit.org/documentation/tu
 
 
 ## History
-2016-12-18 - v1.0 First release
+**2016-12-26** - Add support for multiple FME-server REST versions, v2 and v3. FMEServer JavaScript library is no longer required. The new RestManager module manages FME-server communication.
+
+**2016-12-18** - v1.0 First release
 ## Credits
 dojo-fmeserver-portal was developed by Peter Jäderkvist at Community Development Gävle.
 ## License

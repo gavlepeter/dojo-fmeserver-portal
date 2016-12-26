@@ -30,6 +30,7 @@ define([
 		"dojo/data/ObjectStore",
 		"dojo/store/Memory",
 
+        "./FMEPortal/RestManager",
 		"./FMEPortal/Utils",
 		"./FMEPortal/Login",
 		"./FMEPortal/WorkspaceInfo",
@@ -49,9 +50,10 @@ define([
 		Deferred, all,
 		dijitTemplate,
 		domConstruct, topic, Stateful,
-		registry, Select, Button, Dialog, ObjectStore, Memory, Utils,
+		registry, Select, Button, Dialog, ObjectStore, Memory,
 
-		Login, WorkspaceInfo, GenerateFmeForm, Status,
+
+        RestManager, Utils, Login, WorkspaceInfo, GenerateFmeForm, Status,
 
 		resourceStrings) {
 	var Widget = declare("FmePortal-Widget", [_WidgetBase, _TemplatedMixin, _WidgetsInTemplateMixin, Evented, Stateful], {
@@ -65,7 +67,9 @@ define([
 			_eventHandles : [],
 			_resultCount : 0,
 
-			constructor : function (options) {
+			constructor: function (options) {
+
+			    this.FMERestManager = new RestManager(options);
 
 				this.options = options;
 				this.nls = resourceStrings;
@@ -122,7 +126,7 @@ define([
 			postCreate : function () {
 				this.inherited(arguments);
 
-				// Lookup existing token from LocalStorage.
+			    // Lookup existing token from LocalStorage.
 				var savedSettings = this._getExistingToken();
 				if (savedSettings && savedSettings.token && savedSettings.server) {
 
@@ -130,7 +134,7 @@ define([
 					this.options.settings.fme.server.url = savedSettings.server;
 
 					// Init FMEServer using saved token and serverinfo
-					FMEServer.init({
+					this.FMERestManager.init({
 						server : this.options.settings.fme.server.url,
 						token : savedSettings.token
 					});
@@ -147,7 +151,7 @@ define([
 
 				} else {
 					if (this.options.settings.fme.server.token.autoLogin) { // Sign in using token from config
-						FMEServer.init({
+					    this.FMERestManager.init({
 							server : this.options.settings.fme.server.url,
 							token : this.options.settings.fme.server.token.token || "12345"
 						});
@@ -163,7 +167,7 @@ define([
 					} else {
 
 						// No saved token and no autoLogin
-						FMEServer.init({
+					    this.FMERestManager.init({
 							server : this.options.settings.fme.server.url,
 							token : "111"
 						});
@@ -204,12 +208,12 @@ define([
 				login.on("login", lang.hitch(this, function (evt, settings) {
 						lang.mixin(this.options.settings.fme.server, settings);
 
-						FMEServer.init({
+						this.FMERestManager.init({
 							server : this.options.settings.fme.server.url,
 							token : "111"
 						});
 
-						FMEServer.generateToken(
+						this.FMERestManager.generateToken(
 							encodeURIComponent(evt.username),
 							encodeURIComponent(evt.password),
 							this.options.settings.fme.server.token.time,
@@ -228,7 +232,7 @@ define([
 									login.destroy();
 
 									this._updateLoginStatus(evt.username);
-									FMEServer.init({
+									this.FMERestManager.init({
 										server : this.options.settings.fme.server.url,
 										token : token
 									});
@@ -243,7 +247,7 @@ define([
 				login.on("tokenLogin", lang.hitch(this, function (evt, settings) {
 						lang.mixin(this.options.settings.fme.server, settings);
 
-						FMEServer.init({
+						this.FMERestManager.init({
 							server : this.options.settings.fme.server.url,
 							token : evt.token
 						});
@@ -310,7 +314,7 @@ define([
 
 			_removeExistingToken : function () {
 
-				FMEServer.init({
+			    this.FMERestManager.init({
 					server : this.options.settings.fme.server.url,
 					token : "12345"
 				});
@@ -336,15 +340,16 @@ define([
 
 			},
 
-			_testExistingToken : function () {
+			_testExistingToken: function () {
+
 				var deferred = new Deferred();
-				FMEServer.getResources(lang.hitch(this, function (evt) {
-						if ((evt && evt.message && evt.message.contains("Authentication failed")) || evt === "") {
-							deferred.resolve(false);
-						} else {
-							deferred.resolve(true);
-						}
-					}));
+				this.FMERestManager.getInfo().then(lang.hitch(this, function (evt) {
+				    if ((evt && evt.data && evt.data.message && evt.data.message.contains("Authentication failed")) || evt === "") {
+						deferred.resolve(false);
+					} else {
+						deferred.resolve(true);
+					}
+				}));
 				return deferred;
 			},
 
@@ -393,27 +398,31 @@ define([
 				// Get all repositorys for the authenticated user if adminMode = true
 				if (adminMode) {
 					Utils.show(this._loadingContent);
-					this._customRequest("repositories", "GET", lang.hitch(this, this._adminModeSelects));
+					this.FMERestManager.getRepositories().then(lang.hitch(this, this._adminModeSelects));
 				} else {
-					this._customRequest("repositories", "GET", lang.hitch(this, this._userModeSelects));
+				    this.FMERestManager.getRepositories().then(lang.hitch(this, this._userModeSelects));
 				}
 
-				// Init FMEserver Status module
-				this._portalStatus = new Status(this.options).placeAt(this.options.map.root, "last");
+
+				//// Init FMEserver Status module
+			    this._portalStatus = new Status({
+			        settings: this.options,
+                    restManager: this.FMERestManager
+			    }).placeAt(this.options.map.root, "last");
 
 			},
 
-			_adminModeSelects : function (repos) {
+			_adminModeSelects: function (repos) {
 
-				// If current user have permission to access repositorys, repos.length > 0
-				if (repos && repos.length > 0) {
+			    // If current user have permission to access repositorys, repos.length > 0
+			    if (repos && repos.items && repos.items.length > 0) {
 
 					var workspacesdata = [],
 					reposdata = [],
 					promises = [];
 
 					// Iterate through all repositorys
-					array.forEach(repos, lang.hitch(this, function (repo) {
+					array.forEach(repos.items, lang.hitch(this, function (repo) {
 
 							var deferred = new Deferred();
 							promises.push(deferred);
@@ -423,9 +432,9 @@ define([
 								label : repo.name
 							});
 
-							// Get all workspaces in the current repository
-							this._customRequest("repositories/" + repo.name + "/items", "GET", function (workspaces) {
-								array.forEach(workspaces, function (workspace) {
+					       // Get all workspaces in the current repository
+							this.FMERestManager.getWorkspacesForRepository(repo.name).then(function (workspaces) {
+								array.forEach(workspaces.items, function (workspace) {
 									workspacesdata.push({
 										id : workspace.name,
 										label : workspace.name,
@@ -508,12 +517,12 @@ define([
 
 			},
 
-			_userModeSelects : function (repos) {
+			_userModeSelects: function (repos) {
 
 				var repoPermissions = [];
 
 				// Add the accessible repositorys to repoPermissions
-				array.forEach(repos, function (repo) {
+				array.forEach(repos.items, function (repo) {
 					repoPermissions.push(repo.name);
 				});
 
@@ -596,7 +605,7 @@ define([
 				Utils.show(this._loadingParams);
 
 				// Get workspace parameters and build the form
-				FMEServer.getWorkspaceParameters(ws.repo, ws.id, lang.hitch(this, function (json) {
+				this.FMERestManager.getWorkspaceParameters(ws.repo, ws.id).then(lang.hitch(this, function (json) {
 
 						if (json && json.message === "Authentication failed: Failed to login") {
 							topic.publish("FMEPortal/alert", this.options.settings.fme.general.title, this.nls.Login.Messages.Expired);
@@ -619,7 +628,8 @@ define([
 						this._activeForm = new GenerateFmeForm({
 								options : this.options,
 								parameters : json,
-								ws : ws
+								ws: ws,
+								restManager: this.FMERestManager
 							}).placeAt(this._formContent, "last");
 
 						// Show workspace information button and service type selector, adminMode = true only
@@ -627,7 +637,7 @@ define([
 							if (registry.byId("fmeportal-details")) {
 								registry.byId("fmeportal-details").destroy();
 							}
-							this._customRequest("repositories/" + ws.repo + "/items/" + ws.id, "GET", lang.hitch(this, function (details) {
+							this.FMERestManager.getWorkspaceInfo(ws.repo, ws.id).then(lang.hitch(this, function (details) {
 									this._detailsButton = new Button({
 											"id" : "fmeportal-details",
 											"label" : this.nls.WorkspaceInfo.ButtonLabel,
@@ -640,22 +650,12 @@ define([
 									this._wsSelect.set('disabled', false);
 
 									this._activeForm.addServiceSelect(details);
-
-								}), "detail=high");
-
+								}));
 						} else {
 							this._wsSelect.set('disabled', false);
 						}
 
 					}));
-
-			},
-
-			_customRequest : function (command, type, callback, parameters, contentType) {
-
-				if (command && type && callback) {
-					FMEServer.customRequest(this.options.settings.fme.server.url + "/fmerest/" + this.options.settings.fme.server.version + "/" + command, type, callback, parameters, contentType || "application/json");
-				}
 
 			},
 

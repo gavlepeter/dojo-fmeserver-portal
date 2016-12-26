@@ -35,8 +35,10 @@ define([
 
 			options : {},
 
-			constructor : function (options) {
-				this.options = lang.mixin(this.options, options);
+			constructor: function (options) {
+
+			    this.options = lang.mixin(this.options, options.settings);
+			    this.FMERestManager = options.restManager;
 
 				this.nls = resourceStrings;
 
@@ -61,88 +63,75 @@ define([
 			_addTopics : function () {
 				this.own(
 					topic.subscribe("FMEPortal/orderStart", lang.hitch(this, function () {
-							this._statusInterval = setInterval(lang.hitch(this, this._queryFmeServerStatus), 2000);
-						})),
+						this._statusInterval = setInterval(lang.hitch(this, this._queryFmeServerStatus), 2000);
+					})),
 					topic.subscribe("FMEPortal/orderComplete", lang.hitch(this, function () {
-							clearInterval(this._statusInterval);
-							Utils.hide(this.domNode);
-						})));
+						clearInterval(this._statusInterval);
+						Utils.hide(this.domNode);
+					})));
 			},
 			_requestCompleteRunning : true,
 			_requestCompleteQueued : true,
-			_queryFmeServerStatus : function () {
+			_queryFmeServerStatus: function () {
 
 				if (this._requestCompleteRunning) {
 					this._requestCompleteRunning = false;
-					this._customRequest("transformations/jobs/running", "GET", lang.hitch(this, function (jobs) {
+					this.FMERestManager.getRunningJobs().then(lang.hitch(this, function (response) {
 
-							if (jobs && jobs.message && jobs.message.contains("Unauthorized request")) {
-								clearInterval(this._statusInterval);
-								this.destroy();
-								return;
-							}
+					    var jobs = response.data;
 
-							Utils.show(this.domNode);
+						if (jobs && jobs.message && jobs.message.contains("Unauthorized request")) {
+							clearInterval(this._statusInterval);
+							this.destroy();
+							return;
+						}
 
-							this._requestCompleteRunning = true;
+						Utils.show(this.domNode);
 
-							if (jobs.length === 0) {
-								this._runningTitle.innerHTML = this.nls.Status.RunningJobs + " (0)";
-								this._running.innerHTML = this.nls.Status.NoRunningJobs;
-								return;
-							}
+						this._requestCompleteRunning = true;
 
-							this._runningTitle.innerHTML = this.nls.Status.RunningJobs + " (" + jobs.length + ")";
-							this._running.innerHTML = "";
-							array.forEach(jobs, lang.hitch(this, function (job) {
-									this._running.innerHTML += "<img src='" + require.toUrl("./images/loader.gif") + "' /> " + job.id + ", " + job.request.workspacePath.split("/")[1] + " (" + job.request.subsection + "), <b>" + job.engineName + "</b><br />";
-								}));
-						}), {
-						"detail" : "high",
-						"limit" : -1,
-						"offset" : -1
-					});
-				}
+						if (jobs.length === 0) {
+							this._runningTitle.innerHTML = this.nls.Status.RunningJobs + " (0)";
+							this._running.innerHTML = this.nls.Status.NoRunningJobs;
+							return;
+						}
+
+						this._runningTitle.innerHTML = this.nls.Status.RunningJobs + " (" + jobs.length + ")";
+						this._running.innerHTML = "";
+						array.forEach(jobs, lang.hitch(this, function (job) {
+								this._running.innerHTML += "<img src='" + require.toUrl("./images/loader.gif") + "' /> " + job.id + ", " + job.request.workspacePath.split("/")[1] + " (" + job.request.subsection + "), <b>" + job.engineName + "</b><br />";
+							}));
+					}));
+			    }
 
 				if (this._requestCompleteQueued) {
 					this._requestCompleteQueued = false;
+					this.FMERestManager.getQueuedJobs().then(lang.hitch(this, function (response) {
 
-					this._customRequest("transformations/jobs/queued", "GET", lang.hitch(this, function (jobs) {
+					    var jobs = response.data;
 
-							if (jobs && jobs.message && jobs.message.contains("Unauthorized request")) {
-								clearInterval(this._statusInterval);
-								this.destroy();
-								return;
-							}
+						if (jobs && jobs.message && jobs.message.contains("Unauthorized request")) {
+							clearInterval(this._statusInterval);
+							this.destroy();
+							return;
+						}
 
-							Utils.show(this.domNode);
+						Utils.show(this.domNode);
 
-							this._requestCompleteQueued = true;
-							if (jobs.length === 0) {
-								this._queuedTitle.innerHTML = this.nls.Status.QueuedJobs + " (0)";
-								this._queued.innerHTML = this.nls.Status.NoQueuedJobs;
-								return;
-							}
+						this._requestCompleteQueued = true;
+						if (jobs.length === 0) {
+							this._queuedTitle.innerHTML = this.nls.Status.QueuedJobs + " (0)";
+							this._queued.innerHTML = this.nls.Status.NoQueuedJobs;
+							return;
+						}
 
-							this._queuedTitle.innerHTML = this.nls.Status.QueuedJobs + " (" + jobs.length + ")";
-							this._queued.innerHTML = "";
-							array.forEach(jobs, lang.hitch(this, function (job) {
-									this._queued.innerHTML += job.id + ", " + job.request.workspacePath.split("/")[1] + " (" + job.request.subsection + "), <b>" + job.engineName + "</b><br />";
-								}));
-						}), {
-						"detail" : "high",
-						"limit" : -1,
-						"offset" : -1
-					});
-
+						this._queuedTitle.innerHTML = this.nls.Status.QueuedJobs + " (" + jobs.length + ")";
+						this._queued.innerHTML = "";
+						array.forEach(jobs, lang.hitch(this, function (job) {
+								this._queued.innerHTML += job.id + ", " + job.request.workspacePath.split("/")[1] + " (" + job.request.subsection + "), <b>" + job.engineName + "</b><br />";
+							}));
+					}));
 				}
-			},
-			_customRequest : function (command, type, callback, parameters, contentType) {
-
-				if (command && type && callback) {
-					FMEServer.customRequest(this._apiUrl + "/fmerest/" + this._restVersion + "/" + command, type, callback, parameters, contentType || "application/json");
-				}
-
 			},
 
 			destroy : function () {

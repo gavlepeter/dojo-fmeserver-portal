@@ -70,6 +70,7 @@ define([
 
 				this.options = lang.mixin({}, this.options, args.options);
 				this.nls = resourceStrings;
+				this.FMERestManager = args.restManager;
 
 				this._parameters = args.parameters;
 				this._repository = args.ws.repo;
@@ -306,13 +307,13 @@ define([
 
 						switch (this._type) {
 						case "fmedatadownload":
-							FMEServer.runWorkspaceWithData(this._repository, this._workspace, paths, params, lang.hitch(this, this._resultDataDownload));
+						    this.FMERestManager.runWorkspaceWithData(this._repository, this._workspace, paths, params).then(lang.hitch(this, this._resultDataDownload));
 							break;
 						case "fmejobsubmitter":
-							FMEServer.runWorkspaceWithData(this._repository, this._workspace, paths, params, lang.hitch(this, this._resultJobSubmitter));
+						    this.FMERestManager.runWorkspaceWithData(this._repository, this._workspace, paths, params).then(lang.hitch(this, this._resultJobSubmitter));
 							break;
 						case "fmedatastreaming":
-							FMEServer.runWorkspaceWithData(this._repository, this._workspace, paths, params, lang.hitch(this, this._resultDataStreaming));
+						    this.FMERestManager.runWorkspaceWithData(this._repository, this._workspace, paths, params).then(lang.hitch(this, this._resultDataStreaming));
 							break;
 						default:
 							resultObject = {
@@ -333,13 +334,13 @@ define([
 					// Run workspace (no file uploads)
 					switch (this._type) {
 					case "fmedatadownload":
-						FMEServer.runDataDownload(this._repository, this._workspace, params, lang.hitch(this, this._resultDataDownload));
+					    this.FMERestManager.runDataDownload(this._repository, this._workspace, params).then(lang.hitch(this, this._resultDataDownload));
 						break;
 					case "fmejobsubmitter":
-						FMEServer.submitSyncJob(this._repository, this._workspace, paramsObj, lang.hitch(this, this._resultJobSubmitter));
+					    this.FMERestManager.submitSyncJob(this._repository, this._workspace, paramsObj).then(lang.hitch(this, this._resultJobSubmitter));
 						break;
 					case "fmedatastreaming":
-						FMEServer.runDataStreaming(this._repository, this._workspace, params, lang.hitch(this, this._resultDataStreaming));
+					    this.FMERestManager.runDataStreaming(this._repository, this._workspace, params).then(lang.hitch(this, this._resultDataStreaming));
 						break;
 					default:
 						resultObject = {
@@ -360,7 +361,9 @@ define([
 			/**
 			 *  Handle datadownload-results
 			 */
-			_resultDataDownload : function (json) {
+			_resultDataDownload : function (result) {
+
+			    var json = result.data;
 
 				var resultObject = {
 					"resultClass" : "success",
@@ -395,7 +398,9 @@ define([
 			/**
 			 *  Handle jobsubmitter-results
 			 */
-			_resultJobSubmitter : function (json) {
+			_resultJobSubmitter: function (result) {
+
+			    var json = result.data;
 
 				var resultObject = {
 					"resultClass" : "success",
@@ -439,7 +444,10 @@ define([
 			 *  Handle datastreaming-results
 			 */
 			_streamingCount : 0,
-			_resultDataStreaming : function (result) {
+			_resultDataStreaming: function (result) {
+
+			    type = result.responseType;
+			    result = result.data;
 
 				var resultObject = {
 					"resultClass" : "success",
@@ -450,11 +458,13 @@ define([
 				};
 
 				if (result) {
-					if (typeof result === 'object') {
-						result = "<pre style='width:600px;'>" + JSON.stringify(result, null, 4) + "</pre>";
-					} else {
-						result = "<pre style='width:600px;'>" + this._escapeHTML(result) + "</pre>";
-					}
+
+				    if (typeof result === 'object') {
+				        result = "<pre style='width:600px;'>" + JSON.stringify(result, null, 4) + "</pre>";
+				    } else {
+				        result = "<pre style='width:600px;'>" + this._escapeHTML(result) + "</pre>";
+				    }
+					
 
 					this._streamingCount = this._streamingCount + 1;
 					resultObject.date = new Date().toISOString();
@@ -917,14 +927,15 @@ define([
 				var container = this._generateContainer(param, hidden, true);
 
 				var fileUpload = new FileUpload({
-						settings : this.options.settings,
-						repository : this._repository,
-						workspace : this._workspace,
-						parameter : {
-							name : param.name,
-							description : param.description
-						}
-					});
+					settings : this.options.settings,
+					repository : this._repository,
+					workspace : this._workspace,
+					parameter : {
+						name : param.name,
+						description : param.description
+					},
+                    restManager: this.FMERestManager
+				});
 
 				this._activeFileUploads.push(fileUpload);
 
