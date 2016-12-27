@@ -21,8 +21,6 @@ define([
 		"./Utils",
 		"dojo/i18n!./nls/resources",
 		"dojox/form/uploader/FileList",
-		"dijit/registry",
-		"dijit/ConfirmDialog",
 		"dijit/form/CheckBox",
 		"dijit/form/Form",
 		"dojox/form/Uploader",
@@ -45,8 +43,6 @@ define([
 		Utils,
 		resourceStrings,
 		UploaderFileList,
-		registry,
-		ConfirmDialog,
 		CheckBox) {
 	return declare("FmePortal-FileUpload", [_WidgetBase, _TemplatedMixin, _WidgetsInTemplateMixin], {
 

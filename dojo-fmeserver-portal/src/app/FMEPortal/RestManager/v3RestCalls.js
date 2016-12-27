@@ -37,7 +37,7 @@ define([
 
 			paramsString += this._toParameterString({
 				"opt_responseformat" : "json",
-				"token" : this.token,
+				"token" : this.token
 			}) + "&" + (extra || "");
 
 			this._ajax(requestUrl + paramsString).then(lang.hitch(this, function (results) {
@@ -58,7 +58,7 @@ define([
 			params = this._toParameterString({
 					"opt_responseformat" : "json",
 					"opt_showresult" : true,
-					"token" : this.token,
+					"token" : this.token
 				}) + "&" + (params || "");
 
 			this._ajax(requestUrl, "POST", params, 'application/x-www-form-urlencoded;charset=utf-8').then(lang.hitch(this, function (results) {
@@ -78,7 +78,7 @@ define([
 
 			params = this._toParameterString({
 					"opt_showresult" : true,
-					"token" : this.token,
+					"token" : this.token
 				}) + "&" + (params || "");
 
 			this._ajax(requestUrl, "GET", params, 'application/x-www-form-urlencoded;charset=utf-8', "application/octet-stream").then(lang.hitch(this, function (results) {
@@ -229,7 +229,7 @@ define([
 		_v3_dataUpload : function (repository, workspace, uploader, session) {
 
 			var deferred = new Deferred();
-			debugger;
+
 			session = session || null;
 			var requestUrl = this.serverUrl + "/fmedataupload/" + repository + "/" + workspace;
 

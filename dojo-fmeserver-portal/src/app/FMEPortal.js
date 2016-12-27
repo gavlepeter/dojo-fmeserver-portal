@@ -80,7 +80,7 @@ define([
 					return target.replace(new RegExp(search, 'g'), replacement);
 				};
 				String.prototype.contains = function (it) {
-					return this.indexOf(it) != -1;
+					return this.indexOf(it) !== -1;
 				};
 
 				this._addTopics();
@@ -89,7 +89,7 @@ define([
 
 			_addTopics : function () {
 
-				topic.subscribe("FMEPortal/orderStart", lang.hitch(this, function (html) {
+				topic.subscribe("FMEPortal/orderStart", lang.hitch(this, function () {
 						Utils.show(this._resultLoading);
 					}));
 

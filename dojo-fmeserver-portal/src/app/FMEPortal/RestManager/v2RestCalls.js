@@ -1,4 +1,8 @@
-﻿/*
+﻿/*property
+_v2_runWorkspaceWithData, constructor, length, paramnames, params,
+serverUrl, service
+ */
+/*
 dojo-fmeserver-portal
 https://github.com/gavlepeter/dojo-fmeserver-portal
 @version 1.0
@@ -13,8 +17,7 @@ define([
 	function (
 		declare,
 		lang,
-		Deferred
-		) {
+		Deferred) {
 
 	return declare(null, {
 
@@ -38,7 +41,7 @@ define([
 
 			paramsString += this._toParameterString({
 				"opt_responseformat" : "json",
-				"token" : this.token,
+				"token" : this.token
 			}) + "&" + (extra || "");
 
 			this._ajax(requestUrl + paramsString).then(lang.hitch(this, function (results) {
@@ -59,7 +62,7 @@ define([
 			params = this._toParameterString({
 					"opt_responseformat" : "json",
 					"opt_showresult" : true,
-					"token" : this.token,
+					"token" : this.token
 				}) + "&" + (params || "");
 
 			this._ajax(requestUrl, "POST", params, 'application/x-www-form-urlencoded;charset=utf-8').then(lang.hitch(this, function (results) {
@@ -79,7 +82,7 @@ define([
 
 			params = this._toParameterString({
 					"opt_showresult" : true,
-					"token" : this.token,
+					"token" : this.token
 				}) + "&" + (params || "");
 
 			this._ajax(requestUrl, "POST", params, 'application/x-www-form-urlencoded;charset=utf-8').then(lang.hitch(this, function (results, responseType) {
@@ -234,7 +237,7 @@ define([
 		_v2_dataUpload : function (repository, workspace, uploader, session) {
 
 			var deferred = new Deferred();
-			debugger;
+
 			session = session || null;
 			var requestUrl = this.serverUrl + "/fmedataupload/" + repository + "/" + workspace;
 

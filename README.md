@@ -136,11 +136,13 @@ Example:
 True/False
 
 If adminMode is enabled, the portal will query FME-server for all repositorys and workspaces the authenticated user has access too and populate two dropdowns.
+
 <img src="./images/admin-mode-0.png" width="350">
 
 Additionally, workspace forms will have two extra options next to the Run button:
  - A service type selector allowing the user to run a workspace using a specific registered service 
  - A button to show metadata about the workspace.
+ - 
 <img src="./images/admin-mode-1.png" width="350">
 
 If adminMode is disabled, specific workspaces to include in the portal must be set using the **includedWorkspaces** option.
@@ -251,7 +253,7 @@ More on Dojo internationalization here: https://dojotoolkit.org/documentation/tu
 
 
 ## History
-**2016-12-26** - Add support for multiple FME-server REST versions, v2 and v3. FMEServer JavaScript library is no longer required. The new RestManager module manages FME-server communication.
+**2016-12-26** - Add support for FME-server REST versions, v2 and v3. FMEServer JavaScript library is no longer required. The new RestManager module manages FME-server communication.
 
 **2016-12-18** - v1.0 First release
 ## Credits

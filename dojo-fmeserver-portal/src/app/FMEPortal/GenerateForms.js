@@ -92,15 +92,7 @@ define([
 				this._addTopics();
 
 			},
-			/**
-			 * Subscriptions
-			 * "modules/FmePortalen/disableOrderButton"
-			 * "modules/FmePortalen/enableOrderButton"
-			 * "modules/FmePortalen/orderStart"
-			 * "modules/FmePortalen/orderComplete"
-			 *
-			 * @private
-			 */
+
 			_addTopics : function () {
 
 				this.own(
@@ -273,6 +265,7 @@ define([
 					var values = this._form.get("value");
 					var params = this._processValuesToString(values);
 					var paramsObj = this._processValuesToObject(values);
+					var resultObject;
 
 					// Set service type
 					if (registry.byId("fmeportal-service-select")) {
@@ -330,7 +323,7 @@ define([
 						return;
 					}
 
-					var resultObject;
+					
 					// Run workspace (no file uploads)
 					switch (this._type) {
 					case "fmedatadownload":
@@ -426,7 +419,7 @@ define([
 					resultObject.resultClass = "error"; // Update css class
 
 					if (json.timeFinished) {
-						resultObject.date = json.timeFinished ? json.timeFinished : this.nls.GenerateForms.Error["No transformation result"];
+						resultObject.date = json.timeFinished || this.nls.GenerateForms.Error["No transformation result"];
 						resultObject.message = this._checkErrorMessage(json.statusMessage || json.serviceResponse.statusInfo.message); // Update error message
 					} else {
 						resultObject.date = json.serviceResponse.fmeTransformationResult ? json.serviceResponse.fmeTransformationResult.fmeServerResponse.timeFinished : this.nls.GenerateForms.Error["No transformation result"];
