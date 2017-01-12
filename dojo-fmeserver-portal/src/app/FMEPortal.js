@@ -217,9 +217,8 @@ define([
 							encodeURIComponent(evt.username),
 							encodeURIComponent(evt.password),
 							this.options.settings.fme.server.token.time,
-							this.options.settings.fme.server.token.unit,
+							this.options.settings.fme.server.token.unit).then(
 							lang.hitch(this, function (token) {
-								console.log("login-callback", arguments);
 								if (token.contains("Authentication failed")) {
 									login.setLoginStatus(this.nls.Login.Messages.BadLogin);
 								} else if (token === "") {
