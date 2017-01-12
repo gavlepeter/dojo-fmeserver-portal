@@ -124,7 +124,8 @@
 			"NoMap" : "This portal is not connected to a map.",
 			"Message" : "Select a workspace to enable drawing tools.",
 			"Area" : "The drawing cover {area} hectares.",
-			"Edit" : "Click somewhere outside the edited geometry to save it.",
+			"Edit": "Click somewhere outside the edited geometry to save it.",
+            "Coordinates": "Coordinates",
 			"InputExtent" : {
 				"Title" : "Input extent coordinates",
 				"Input" : "Input",

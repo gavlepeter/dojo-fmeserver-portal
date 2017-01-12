@@ -123,7 +123,8 @@
 		"NoMap" : "Portalen är inte kopplad till en karta.",
 		"Message" : "Välj ett FME-skript för att aktivera ritverktyg.",
 		"Area" : "Ritningen täcker {area} hektar.",
-		"Edit" : "Klicka utanför den ändrade ytan för att spara.",
+		"Edit": "Klicka utanför den ändrade ytan för att spara.",
+		"Coordinates": "Koordinater",
 		"InputExtent" : {
 			"Title" : "Ange utbredningskoordinater",
 			"Input" : "Ange",
