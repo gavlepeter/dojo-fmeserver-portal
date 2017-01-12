@@ -78,7 +78,7 @@ define([
 					this._requestCompleteRunning = false;
 					this.FMERestManager.getRunningJobs().then(lang.hitch(this, function (response) {
 
-					    var jobs = response.data;
+					    var jobs = response;
 
 						if (jobs && jobs.message && jobs.message.contains("Unauthorized request")) {
 							clearInterval(this._statusInterval);
@@ -108,7 +108,7 @@ define([
 					this._requestCompleteQueued = false;
 					this.FMERestManager.getQueuedJobs().then(lang.hitch(this, function (response) {
 
-					    var jobs = response.data;
+					    var jobs = response;
 
 						if (jobs && jobs.message && jobs.message.contains("Unauthorized request")) {
 							clearInterval(this._statusInterval);
