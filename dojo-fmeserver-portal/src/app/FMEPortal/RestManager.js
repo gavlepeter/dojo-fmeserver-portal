@@ -90,7 +90,7 @@ define([
 
 	            var data = null,
                 query = null;
-	            if (params && params.get && params.get("files[]")) { // FormData()
+	            if ((params && params.get && params.get("files[]")) || params && params.append) { // FormData()
 	                data = params;
 	            } else if (params && params.publishedParameters) { // Query object
 	                data = JSON.stringify(params);
