@@ -2,7 +2,7 @@
 dojo-fmeserver-portal
 https://github.com/gavlepeter/dojo-fmeserver-portal
 @version 1.0
-@author Peter Jäderkvist <peter.jaderkvist@gavle.se>
+@author Peter Jäderkvist <p.jaderkvist@gmail.com>
 @module FMEPortal
 @license See https://github.com/gavlepeter/dojo-fmeserver-portal/blob/master/License.md
  */
@@ -379,11 +379,12 @@ define([
 
 							// On Toolbar draw-end, set geometry in the active form
 							this.own(
-								on(this._activeToolbar, 'geometry-change', lang.hitch(this, function (jsonGeom) {
-										if (this._activeForm) {
-											this._activeForm.setGeometry(jsonGeom);
-										}
-									})));
+                                on(this._activeToolbar, 'geometry-change', lang.hitch(this, function (jsonGeom) {
+                                    this._activeGeometry = jsonGeom;
+									if (this._activeForm) {
+                                        this._activeForm.setGeometry(this._activeGeometry);
+									}
+								})));
 						}));
 				} else {
 					this._toolbar.innerHTML = this.nls.Toolbar.NoMap;
@@ -628,7 +629,8 @@ define([
 								options : this.options,
 								parameters : json,
 								ws: ws,
-								restManager: this.FMERestManager
+                                restManager: this.FMERestManager,
+                                geometry: this._activeGeometry
 							}).placeAt(this._formContent, "last");
 
 						// Show workspace information button and service type selector, adminMode = true only

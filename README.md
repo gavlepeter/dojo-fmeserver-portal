@@ -253,6 +253,8 @@ More on Dojo internationalization here: https://dojotoolkit.org/documentation/tu
 
 
 ## History
+**2019-03-08** - Add support for the opt_namespace parameter. Create new file upload session on each portal visit. Fix an issue that the geometry needed to be redrawn when changing workspace.
+
 **2016-12-26** - Add support for FME-server REST versions, v2 and v3. FMEServer JavaScript library is no longer required. The new RestManager module manages FME-server communication.
 
 **2016-12-18** - v1.0 First release

@@ -1,12 +1,8 @@
-﻿/*property
-_v2_runWorkspaceWithData, constructor, length, paramnames, params,
-serverUrl, service
- */
-/*
+﻿/*
 dojo-fmeserver-portal
 https://github.com/gavlepeter/dojo-fmeserver-portal
 @version 1.0
-@author Peter Jäderkvist <peter.jaderkvist@gavle.se>
+@author Peter Jäderkvist <p.jaderkvist@gmail.com>
 @module FMEPortal/RestManager/v2RestCalls
  */
 define([
