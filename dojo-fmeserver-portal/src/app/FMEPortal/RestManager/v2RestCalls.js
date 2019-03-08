@@ -211,17 +211,23 @@ define([
 			return deferred;
 		},
 
-		_v2_getSession : function (repository, workspace) {
+		_v2_getSession : function (repository, workspace, session) {
 			var deferred = new Deferred();
 
 			var requestUrl = this.serverUrl + "/fmedataupload/" + repository + "/" + workspace;
 
-			var params = this._toParameterString({
-					"opt_extractarchive" : false,
-					"opt_pathlevel" : 3,
-					"opt_fullpath" : true,
-					"token" : this.token
-				});
+            var paramConfigs = {
+                "opt_extractarchive": false,
+                "opt_pathlevel": 3,
+                "opt_fullpath": true,
+                "token": this.token
+            };
+
+            if (session) {
+                paramConfigs["opt_namespace"] = session;
+            }
+
+            var params = this._toParameterString(paramConfigs);
 
 			this._ajax(requestUrl, "POST", params, "application/x-www-form-urlencoded;charset=utf-8").then(lang.hitch(this, function (results) {
 					if (results.success) {
@@ -245,11 +251,17 @@ define([
 				requestUrl += ';jsessionid=' + session;
 			}
 
-			requestUrl += "?" + this._toParameterString({
-				"opt_extractarchive" : true,
-				"opt_pathlevel" : 3,
-				"opt_fullpath" : true
-			});
+            var paramConfigs = {
+                "opt_extractarchive": true,
+                "opt_pathlevel": 3,
+                "opt_fullpath": true
+            };
+
+            if (session) {
+                paramConfigs["opt_namespace"] = session;
+            }
+
+            requestUrl += "?" + this._toParameterString(paramConfigs);
 
 			var params = new FormData();
 

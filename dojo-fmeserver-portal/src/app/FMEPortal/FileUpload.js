@@ -60,7 +60,7 @@ define([
 			this.set("description", this.options.parameter.description);
 			this.set("disabledFiles", this.options.settings.fme.uploadSettings.disabledFiles);
 
-			this.FMERestManager.getSession(this.options.repository, this.options.workspace).then(lang.hitch(this, function (json) {
+            this.FMERestManager.getSession(this.options.repository, this.options.workspace, this.FMERestManager.sessionId).then(lang.hitch(this, function (json) {
 				if (json.serviceResponse.files) {
 					this.set("session", json.serviceResponse.session);
 					this.set("path", json.serviceResponse.files.folder[0].path);

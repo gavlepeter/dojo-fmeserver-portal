@@ -31,7 +31,8 @@ define([
 
 	        constructor: function (options) {
 	            this.options = lang.mixin(this.options, options);
-	            this.restVersion = this.options.settings.fme.server.version;
+                this.restVersion = this.options.settings.fme.server.version;
+                this.sessionId = Number(new Date()); // Set unique session number
 
 	            this._setupAPIMethods();
 	        },

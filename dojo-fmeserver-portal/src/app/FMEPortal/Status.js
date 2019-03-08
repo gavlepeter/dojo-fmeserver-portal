@@ -77,6 +77,9 @@ define([
 				if (this._requestCompleteRunning) {
 					this._requestCompleteRunning = false;
 					this.FMERestManager.getRunningJobs().then(lang.hitch(this, function (response) {
+                        if (response && response.data) {
+                            response = response.data;
+                        }
 
 					    var jobs = response;
 
@@ -107,6 +110,9 @@ define([
 				if (this._requestCompleteQueued) {
 					this._requestCompleteQueued = false;
 					this.FMERestManager.getQueuedJobs().then(lang.hitch(this, function (response) {
+                        if (response && response.data) {
+                            response = response.data;
+                        }
 
 					    var jobs = response;
 
