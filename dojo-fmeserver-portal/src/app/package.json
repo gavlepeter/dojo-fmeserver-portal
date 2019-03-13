@@ -1,6 +1,7 @@
 {
   "author": "Peter Jäderkvist <p.jaderkvist@gmail.com>",
   "bugs": "https://github.com/gavlepeter/dojo-fmeserver-portal/issues",
+  "version": "1.1.0",
   "description": "Configurable FME-portal",
   "licenses": [
     {
@@ -18,5 +19,5 @@
       "url": "https://github.com/gavlepeter/dojo-fmeserver-portal"
     }
   ],
-  "year": "2016"
+  "year": "2019"
 }

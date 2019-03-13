@@ -1,7 +1,6 @@
 ﻿/*
 dojo-fmeserver-portal
 https://github.com/gavlepeter/dojo-fmeserver-portal
-@version 1.0
 @author Peter Jäderkvist <p.jaderkvist@gmail.com>
 @module FMEPortal/Status
  */
@@ -76,9 +75,10 @@ define([
 
 				if (this._requestCompleteRunning) {
 					this._requestCompleteRunning = false;
-					this.FMERestManager.getRunningJobs().then(lang.hitch(this, function (response) {
-                        if (response && response.data) {
-                            response = response.data;
+                    this.FMERestManager.getRunningJobs().then(lang.hitch(this, function(response) {
+
+                        if (response && (response.data || response.items)) {
+                            response = response.data || response.items;
                         }
 
 					    var jobs = response;
@@ -102,7 +102,7 @@ define([
 						this._runningTitle.innerHTML = this.nls.Status.RunningJobs + " (" + jobs.length + ")";
 						this._running.innerHTML = "";
 						array.forEach(jobs, lang.hitch(this, function (job) {
-								this._running.innerHTML += "<img src='" + require.toUrl("./images/loader.gif") + "' /> " + job.id + ", " + job.request.workspacePath.split("/")[1] + " (" + job.request.subsection + "), <b>" + job.engineName + "</b><br />";
+                            this._running.innerHTML += "<img src='" + require.toUrl("./images/loader.gif") + "' /> " + job.id + ", " + job.request.workspacePath.split("/")[1] + " <b>" + job.engineName + "</b><br />";
 							}));
 					}));
 			    }
@@ -110,8 +110,9 @@ define([
 				if (this._requestCompleteQueued) {
 					this._requestCompleteQueued = false;
 					this.FMERestManager.getQueuedJobs().then(lang.hitch(this, function (response) {
-                        if (response && response.data) {
-                            response = response.data;
+
+                        if (response && (response.data || response.items)) {
+                            response = response.data || response.items;
                         }
 
 					    var jobs = response;
@@ -134,7 +135,7 @@ define([
 						this._queuedTitle.innerHTML = this.nls.Status.QueuedJobs + " (" + jobs.length + ")";
 						this._queued.innerHTML = "";
 						array.forEach(jobs, lang.hitch(this, function (job) {
-								this._queued.innerHTML += job.id + ", " + job.request.workspacePath.split("/")[1] + " (" + job.request.subsection + "), <b>" + job.engineName + "</b><br />";
+								this._queued.innerHTML += job.id + ", " + job.request.workspacePath.split("/")[1] + " <b>" + job.engineName + "</b><br />";
 							}));
 					}));
 				}

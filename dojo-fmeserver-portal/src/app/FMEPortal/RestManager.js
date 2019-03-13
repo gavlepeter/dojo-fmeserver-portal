@@ -1,7 +1,6 @@
 ﻿/*
 dojo-fmeserver-portal
 https://github.com/gavlepeter/dojo-fmeserver-portal
-@version 1.0
 @author Peter Jäderkvist <p.jaderkvist@gmail.com>
 @module FMEPortal/RestManager
  */
@@ -58,6 +57,7 @@ define([
                         "runWorkspaceWithData",
                         "runDataDownload",
                         "runDataStreaming",
+                        "runJobSubmitter",
                         "submitJob",
                         "submitSyncJob",
                         "getRepositories",

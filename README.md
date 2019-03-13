@@ -11,11 +11,12 @@ FME workspaces stored on FME-server.
 - Two "portal modes", admin or custom mode.
 - Most FME parameter types are supported and represented as dijit form widgets.
 - File Upload forms.
-- Map and drawing tools for managing clipping geometries, right-click to apply buffer.
+- Map and drawing tools for managing clipping geometries, buffering and multipolygon support.
 - Simple JSON configuration.
-- Internationalization (en, sv).
+- Internationalization (English and Swedish).
 - Supports FME-server service types Data Download, Job Submitter and Data Streaming.
-- Access workspace metadata and see running and queued jobs on FME-server
+- Run workspaces synchronously or asynchronous by sending results to email.
+- Access workspace metadata and see running and queued jobs on FME-server.
 
 <img src="./images/app-0.png" style="width:100%;">
 
@@ -128,7 +129,8 @@ Example:
                },
                "url": "https://my-fmeserver.com",
                "version": "v2",
-               "showSettingsTab": true
+               "showSettingsTab": true,
+			   "allowAsyncJobs": true
         }
 
 
@@ -165,13 +167,18 @@ True/False
 
 Allow the visitor to change server **url** and set **adminMode** before signing in.
 
+#### allowAsyncJobs
+True/False
+
+Always show email forms for workspaces registered to the Data Download and Job Submitter services. This allows running jobs asynchronously.
+
 ### Uploads
 Disable selection of specific filetypes for upload to FME-server.
 
 Example:
 
     "uploadSettings": { 
-       "disabledFiles": [".shx", ".prj", ".dbf", ".sbn", ".sbx", ".lock", ".png", ".xml", ".jpg", ".doc", ".docx", ".skp"]
+       "disabledFiles": [".shx", ".prj", ".dbf", ".sbn", ".sbx", ".lock", ".png", ".xml", ".jpg", ".doc", ".docx", ".skp", ".cpg"]
     }
 
 ### Included workspaces
@@ -253,6 +260,8 @@ More on Dojo internationalization here: https://dojotoolkit.org/documentation/tu
 
 
 ## History
+**2019-03-13** - Support multipolygon clipping geometry. Add forms for running jobs asynchronously by entering an email address. Add submitJob and runJobSubmitter methods to RestManager. The runJobSubmitter method can be used instead of submitSyncJob or submitJob.
+
 **2019-03-08** - Add support for the opt_namespace parameter. Create new file upload session on each portal visit. Fix an issue that the geometry needed to be redrawn when changing workspace.
 
 **2016-12-26** - Add support for FME-server REST versions, v2 and v3. FMEServer JavaScript library is no longer required. The new RestManager module manages FME-server communication.

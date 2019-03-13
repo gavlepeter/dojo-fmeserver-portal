@@ -69,7 +69,8 @@
 			"Success" : "Körningen lyckades!",
 			"Download" : "Ladda ned resultatet",
 			"Count" : "Skrivna objekt/poster",
-			"ViewStreamingResult" : "Visa resultat från data streaming-tjänsten"
+            "ViewStreamingResult": "Visa resultat från data streaming-tjänsten",
+            "Email": "Ditt jobb med ID <b>{jobID}</b> har skickats till FME-server. Resultatet kommer att skickas till <b>{email}</b>."
 		},
 		"ButtonOrder" : "Kör",
 		"Error" : {
@@ -81,7 +82,9 @@
 			"Transformation failed" : "Något gick fel vid körningen",
 			"Unauthorized request" : "Obehörigt anrop",
 			"No transformation result" : "Körningen gav inget resultat."
-		}
+        },
+        "EmailResults": "Maila resultatet",
+        "EmailPlaceholder": "Ange e-post"
 	},
 	"FileUpload" : {
 		"AddFiles" : "Lägg till fil(er)",
@@ -124,7 +127,9 @@
 		"Message" : "Välj ett FME-skript för att aktivera ritverktyg.",
 		"Area" : "Ritningen täcker {area} hektar.",
 		"Edit": "Klicka utanför den ändrade ytan för att spara.",
-		"Coordinates": "Koordinater",
+        "Coordinates": "Koordinater",
+        "DrawMultiple": "Rita flera klippytor",
+        "HasIntersections": "Överlappande klippytor tillåts inte.",
 		"InputExtent" : {
 			"Title" : "Ange utbredningskoordinater",
 			"Input" : "Ange",

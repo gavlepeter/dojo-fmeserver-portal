@@ -70,7 +70,8 @@
 				"Success" : "Translation Successful",
 				"Download" : "Download results...",
 				"Count" : "written features",
-				"ViewStreamingResult" : "View data streaming results"
+                "ViewStreamingResult": "View data streaming results",
+                "Email": "Your job with ID {jobID} was successfully sent to FME-server. The translation results will be emailed to {email}."
 			},
 			"ButtonOrder" : "Run",
 			"Error" : {
@@ -82,7 +83,9 @@
 				"Transformation failed" : "The transformation failed",
 				"Unauthorized request" : "Unauthorized request",
 				"No transformation result" : "No transformation result"
-			}
+            },
+            "EmailResults": "Email the results",
+            "EmailPlaceholder": "Enter email"
 		},
 		"FileUpload" : {
 			"AddFiles" : "Add file(s)",
@@ -124,7 +127,9 @@
 			"NoMap" : "This portal is not connected to a map.",
 			"Message" : "Select a workspace to enable drawing tools.",
 			"Area" : "The drawing cover {area} hectares.",
-			"Edit": "Click somewhere outside the edited geometry to save it.",
+            "Edit": "Click somewhere outside the edited geometry to save it.",
+            "DrawMultiple": "Draw multiple clipping areas",
+            "HasIntersections": "Intersecting clipping areas are not allowed.",
             "Coordinates": "Coordinates",
 			"InputExtent" : {
 				"Title" : "Input extent coordinates",

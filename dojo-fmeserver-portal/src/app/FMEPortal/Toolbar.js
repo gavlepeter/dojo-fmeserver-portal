@@ -1,14 +1,14 @@
 ﻿/*
 dojo-fmeserver-portal
 https://github.com/gavlepeter/dojo-fmeserver-portal
-@version 1.0
 @author Peter Jäderkvist <p.jaderkvist@gmail.com>
 @module FMEPortal/Toolbar
  */
 define([
 		"dojo/_base/declare",
 		"dojo/_base/lang",
-		"dojo/_base/event",
+        "dojo/_base/event",
+        "dojo/_base/array",
 		"dijit/_WidgetBase",
 		"dijit/_TemplatedMixin",
 		"dijit/_WidgetsInTemplateMixin",
@@ -41,14 +41,16 @@ define([
 		"dijit/Menu",
 		"dijit/form/Button",
 		"dijit/form/NumberTextBox",
-		"dijit/form/Form",
+        "dijit/form/Form",
+        "dijit/form/CheckBox",
 		"dijit/Fieldset"
 
 	],
 	function (
 		declare,
 		lang,
-		event,
+        event,
+        array,
 		_WidgetBase, _TemplatedMixin, _WidgetsInTemplateMixin, Evented,
 		on,
 		dijitTemplate,
@@ -179,10 +181,11 @@ define([
 			},
 
 			_addToMap : function (evt) {
-				var symbol,
-				geometry,
-				geometryPolygon;
-				this._toolbar.deactivate();
+				var symbol, geometry, geometryPolygon;
+
+                if (!this._drawMulti.get('checked')) {
+                    this._toolbar.deactivate();
+                }
 
 				switch (evt.geometry.type) {
 				case "point":
@@ -212,11 +215,44 @@ define([
 					break;
 				}
 
-				var graphic = new Graphic(geometry, symbol);
-				this._drawGraphicsLayer.add(graphic);
+                if (this._drawMulti.get('checked')) {
+                    if (this._drawGraphicsLayer.graphics.length > 0) {
 
-				this._refreshArea(geometry);
-				this._setGeometryParameter(geometry);
+                        var existingGraphic = this._drawGraphicsLayer.graphics[0];
+
+                        // Test if new ring is intersecting previous rings
+                        var deferred = esriConfig.defaults.geometryService.intersect([existingGraphic.geometry], geometry);
+                        deferred.then(lang.hitch(this, function (geometries) {
+
+                            // No intersections, OK!
+                            if (geometries[0].rings.length === 0) {
+                                existingGraphic.geometry.addRing(geometry.rings[0]);
+                                geometry = existingGraphic.geometry;
+                                this._drawGraphicsLayer.redraw();
+
+                                this._refreshArea(geometry);
+                                this._setGeometryParameter(geometry);
+                            } else {
+                                alert(this.nls.Toolbar.HasIntersections);
+                            }
+
+                            this._drawingEnabled = false;
+                        }));
+
+                        return;
+
+                    } else {
+                        var graphic = new Graphic(geometry, symbol);
+                        this._drawGraphicsLayer.add(graphic);
+                    }
+                } else {
+                    var graphic = new Graphic(geometry, symbol);
+                    this._drawGraphicsLayer.add(graphic);
+                }
+
+                this._refreshArea(geometry);
+                this._setGeometryParameter(geometry);
+
 				this._drawingEnabled = false;
 
 			},
@@ -256,25 +292,24 @@ define([
 					return;
 				}
 
-				// geojson
+				// Geojson
 				if (this.options.settings.fme.geometry.format === "geojson") {
 
-					var geographicGeometry = webMercatorUtils.webMercatorToGeographic(geometry);
-					var clippingGeometry = geographicGeometry.rings[0],
-					i,
-					lat,
-					lng;
+                    var geographicGeometry = webMercatorUtils.webMercatorToGeographic(geometry);
+                    var isMulti = geographicGeometry.rings.length > 1;
 
-					// Process the clippingGeometry into a WKT Polygon string
-					processedGeometry = "POLYGON((";
-					for (i = 0; i < clippingGeometry.length; i++) {
-						lat = clippingGeometry[i][1];
-						lng = clippingGeometry[i][0];
-						processedGeometry += lng + " " + lat + ",";
-					}
+                    processedGeometry = isMulti ? "MULTIPOLYGON (" : "POLYGON (";
 
-					processedGeometry = processedGeometry.substr(0, processedGeometry.length - 1);
-					processedGeometry += "))";
+                    geographicGeometry.rings.forEach(function (ring) {
+                        processedGeometry += isMulti ? "((" : "(";
+                        for (var i = 0; i < ring.length; i++) {
+                            processedGeometry += ring[i][0] + " " + ring[i][1] + ",";
+                        }
+                        processedGeometry = processedGeometry.substr(0, processedGeometry.length - 1);
+                        processedGeometry += isMulti ? "))," : "),";
+                    });
+
+                    processedGeometry = processedGeometry.substr(0, processedGeometry.length - 1) + ")";
 
 					this.emit("geometry-change", processedGeometry);
 					return;
@@ -291,7 +326,11 @@ define([
 						})),
 					on(this._drawExtent, "click", lang.hitch(this, function () {
 							this._startDrawing("EXTENT");
-						})),
+                    })),
+                    on(this._drawMulti, "change", lang.hitch(this, function () {
+                        this._toolbar.deactivate();
+                        this._editor.deactivate();
+                    })),
 					on(this._clearMap, "click", lang.hitch(this, function () {
 							this._xmin.set('value', 0);
 							this._ymin.set('value', 0);
@@ -345,10 +384,15 @@ define([
 				this._xmin.set('value', 0);
 				this._ymin.set('value', 0);
 				this._xmax.set('value', 0);
-				this._ymax.set('value', 0);
-				this._drawGraphicsLayer.clear();
-				this._bufferGraphicsLayer.clear();
-				this._toolbar.activate(Draw[tool]);
+                this._ymax.set('value', 0);
+
+                // Only clear graphics if drawMulti is not checked
+                if (!this._drawMulti.get('checked')) {
+                    this._drawGraphicsLayer.clear();
+                    this._bufferGraphicsLayer.clear();
+                }
+
+                this._toolbar.activate(Draw[tool]);
 				this._drawingEnabled = true;
 			},
 

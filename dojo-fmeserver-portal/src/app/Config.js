@@ -19,7 +19,8 @@ define({
 			},
 			"url" : "https://my-fme-server.com", // Url to FME-server
 			"version" : "v2", // Supported REST-version is currently v2
-			"showSettingsTab" : true // Allow the visitor to change server settings
+            "showSettingsTab": true, // Allow the visitor to change server settings,
+            "allowAsyncJobs": true // Always show email result option at the bottom of generated forms
 		},
 		"uploadSettings" : { // Disable selection of these file types in File Uploads
 			"disabledFiles" : [".shx", ".prj", ".dbf", ".sbn", ".sbx", ".lock", ".png", ".xml", ".jpg", ".doc", ".docx", ".skp"]

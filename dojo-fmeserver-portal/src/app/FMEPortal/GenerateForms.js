@@ -1,7 +1,6 @@
 ﻿/*
 dojo-fmeserver-portal
 https://github.com/gavlepeter/dojo-fmeserver-portal
-@version 1.0
 @author Peter Jäderkvist <p.jaderkvist@gmail.com>
 @module FMEPortal/GenerateForms
  */
@@ -41,7 +40,8 @@ define([
 		"dojox/form/CheckedMultiSelect",
 		"dijit/form/DropDownButton",
 		"esri/dijit/ColorPicker",
-		"esri/Color"
+        "esri/Color",
+        "dojox/validate"
 
 	],
 	function (
@@ -145,6 +145,22 @@ define([
 
 				this._activeFileUploads = []; // Support multiple file uploads
 
+                if (!this.options.settings.fme.server.allowAsyncJobs) {
+                    domConstruct.destroy(this._serviceModeContainer);
+                } else {
+                    this.own(
+                        on(this._serviceMode, "change", lang.hitch(this, function() {
+                            var visible = this._serviceMode.get('checked') ? "block" : "none";
+                            domStyle.set(this._email.domNode, "display", visible);
+                        }))
+                    );
+
+                    if (this._type && this._type === "fmedatastreaming") {
+                        Utils.hide(this._serviceModeContainer);
+                    }
+
+                }
+
 				array.forEach(this._parameters, lang.hitch(this, function (param) {
 
 						var hiddenForms = [this.options.settings.fme.geometry.parameter]; // Hide geometry field
@@ -217,8 +233,9 @@ define([
 					Utils.show(this._title);
 					this.own(
 						on(this._title, "click", lang.hitch(this, function () {
-								Utils.toggle(this._description);
-							})));
+							Utils.toggle(this._description);
+                        }))
+                    );
 				}
 
 			},
@@ -236,13 +253,30 @@ define([
 					list.push(item);
 				});
 
-				Utils.show(this._serviceType);
+                Utils.show(this._serviceType);
+
 				this._serviceSelect = new Select({
 						id : "fmeportal-service-select",
 						name : "service",
 						options : list,
 						style : "width:185px"
-					}, this._serviceType).startup();
+                }, this._serviceType).startup();
+
+                // if async mode is allowed, show forms for workspaces registered to jobsubmitter and datadownload.
+                if (registry.byId("fmeportal-service-select").get('value') === "fmedatastreaming" && this._serviceModeContainer) {
+                    Utils.hide(this._serviceModeContainer);
+                }
+
+                this.own(
+                    registry.byId("fmeportal-service-select").on('change', lang.hitch(this, function() {
+                        if (registry.byId("fmeportal-service-select").get('value') === "fmedatastreaming" && this._serviceModeContainer) {
+                            Utils.hide(this._serviceModeContainer);
+                        } else {
+                            Utils.show(this._serviceModeContainer);
+                        }
+                    }))
+                );
+
 			},
 
 			/**
@@ -260,17 +294,31 @@ define([
 
 				if (this._form.validate()) {
 
-					topic.publish("FMEPortal/orderStart");
+                    var values = this._form.get("value");
 
-					var values = this._form.get("value");
+                    // Set service type
+                    if (registry.byId("fmeportal-service-select")) {
+                        this._type = registry.byId("fmeportal-service-select").get('value');
+                    }
+
+                    // Set servicemode
+                    if (this.options.settings.fme.server.allowAsyncJobs && this._serviceMode.get('checked')) {
+                        if (this._email.isValid() && this._email.get('value')) {
+                            values = lang.mixin({}, values, {
+                                "opt_servicemode": "async",
+                                "opt_requesteremail": this._email.get('value')
+                            });
+                        } else {
+                            this._email.focus();
+                            return;
+                        }
+                    }
+
+                    topic.publish("FMEPortal/orderStart");
+
 					var params = this._processValuesToString(values);
-					var paramsObj = this._processValuesToObject(values);
-					var resultObject;
-
-					// Set service type
-					if (registry.byId("fmeportal-service-select")) {
-						this._type = registry.byId("fmeportal-service-select").get('value');
-					}
+					var paramsObj = this._processValuesToObject(values); // Only used when submitting jobs through the REST service
+                    var resultObject;
 
 					// Validate and collect uploaded files from widgets
 					if (this._activeFileUploads && this._activeFileUploads.length > 0) {
@@ -287,16 +335,16 @@ define([
 						// Multiple file upload forms
 						array.forEach(this._activeFileUploads, lang.hitch(this, function (fileUpload) {
 
-								var filesResources = fileUpload.getValues();
+							var filesResources = fileUpload.getValues();
 
-								// Push uploaded files to the params.files array
-								if (filesResources && filesResources.files) {
-									params.paramnames.push(fileUpload.get("paramname"));
-									params.files.push(filesResources.files);
-									paths.push(fileUpload.get("path"));
-								}
+							// Push uploaded files to the params.files array
+							if (filesResources && filesResources.files) {
+								params.paramnames.push(fileUpload.get("paramname"));
+								params.files.push(filesResources.files);
+								paths.push(fileUpload.get("path"));
+							}
 
-							}));
+						}));
 
 						switch (this._type) {
 						case "fmedatadownload":
@@ -323,14 +371,15 @@ define([
 						return;
 					}
 
-					
 					// Run workspace (no file uploads)
 					switch (this._type) {
 					case "fmedatadownload":
 					    this.FMERestManager.runDataDownload(this._repository, this._workspace, params).then(lang.hitch(this, this._resultDataDownload));
 						break;
-					case "fmejobsubmitter":
-					    this.FMERestManager.submitSyncJob(this._repository, this._workspace, paramsObj).then(lang.hitch(this, this._resultJobSubmitter));
+                        case "fmejobsubmitter":
+                        // Update 2019-03-12: Use Job Submitter service instead of REST service to submit jobs.
+                        this.FMERestManager.runJobSubmitter(this._repository, this._workspace, params).then(lang.hitch(this, this._resultJobSubmitter));
+                        // this.FMERestManager.submitSyncJob(this._repository, this._workspace, paramsObj).then(lang.hitch(this, this._resultJobSubmitter));
 						break;
 					case "fmedatastreaming":
 					    this.FMERestManager.runDataStreaming(this._repository, this._workspace, params).then(lang.hitch(this, this._resultDataStreaming));
@@ -369,13 +418,20 @@ define([
 				// Translation OK
 				if (json && json.serviceResponse && json.serviceResponse.statusInfo && json.serviceResponse.statusInfo.status === "success") {
 
-					resultObject.date = json.serviceResponse.fmeTransformationResult.fmeServerResponse.timeFinished;
-					if (json.serviceResponse.url) { // Download link
-						resultObject.message = "<i class='material-icons'>&#xE2C4;</i><a href='" + json.serviceResponse.url + "'>" + this.nls.GenerateForms.Results.Download + "</a>";
-					} else { // Features output Message
-						resultObject.message = this._checkSuccessMessage(json.statusMessage) + ", " + json.numFeaturesOutput + " " + this.nls.GenerateForms.Results.Count;
-					}
 
+                    if (json.serviceResponse.statusInfo.mode && json.serviceResponse.statusInfo.mode === "async") {
+                        resultObject.date = new Date().toISOString();
+                        resultObject.message = lang.replace(this.nls.GenerateForms.Results.Email, json.serviceResponse);
+                    } else {
+                        resultObject.date = json.serviceResponse.fmeTransformationResult.fmeServerResponse.timeFinished;
+                        if (json.serviceResponse.url) { // Download link
+                            resultObject.message = "<i class='material-icons'>&#xE2C4;</i><a href='" + json.serviceResponse.url + "'>" + this.nls.GenerateForms.Results.Download + "</a>";
+                        } else { // Features output Message
+                            var fmeEngineResponse = json.serviceResponse.fmeTransformationResult.fmeEngineResponse;
+                            resultObject.message = this._checkSuccessMessage(fmeEngineResponse.statusMessage) + ", " + fmeEngineResponse.numFeaturesOutput + " " + this.nls.GenerateForms.Results.Count;
+                        }
+                    }
+					
 				} else { // Something went wrong
 					resultObject.resultClass = "error"; // Update css class
 					resultObject.date = json.serviceResponse.fmeTransformationResult ? json.serviceResponse.fmeTransformationResult.fmeServerResponse.timeFinished : this.nls.GenerateForms.Error["No transformation result"];
@@ -405,13 +461,17 @@ define([
 
 				if (json && json.serviceResponse &&
 					json.serviceResponse.statusInfo &&
-					json.serviceResponse.statusInfo &&
-					json.serviceResponse.statusInfo.status === "success") {
+                    json.serviceResponse.statusInfo.status === "success") {
 
-					var fmeEngineResponse = json.serviceResponse.fmeTransformationResult.fmeEngineResponse;
-					resultObject.date = json.serviceResponse.fmeTransformationResult.fmeServerResponse.timeFinished;
-					resultObject.message = this._checkSuccessMessage(fmeEngineResponse.statusMessage) + ", " + fmeEngineResponse.numFeaturesOutput + " " + this.nls.GenerateForms.Results.Count;
-
+                    if (json.serviceResponse.statusInfo.mode && json.serviceResponse.statusInfo.mode === "async") {
+                        resultObject.date = new Date().toISOString();
+                        resultObject.message = lang.replace(this.nls.GenerateForms.Results.Email, json.serviceResponse);
+                    } else {
+                        var fmeEngineResponse = json.serviceResponse.fmeTransformationResult.fmeEngineResponse;
+                        resultObject.date = json.serviceResponse.fmeTransformationResult.fmeServerResponse.timeFinished;
+                        resultObject.message = this._checkSuccessMessage(fmeEngineResponse.statusMessage) + ", " + fmeEngineResponse.numFeaturesOutput + " " + this.nls.GenerateForms.Results.Count;
+                    }
+				
 				} else if (json && json.status === "SUCCESS") {
 					resultObject.date = json.timeFinished;
 					resultObject.message = this._checkSuccessMessage(json.statusMessage) + ", " + json.numFeaturesOutput + " " + this.nls.GenerateForms.Results.Count;
@@ -436,7 +496,8 @@ define([
 			/**
 			 *  Handle datastreaming-results
 			 */
-			_streamingCount : 0,
+            _streamingCount: 0,
+
 			_resultDataStreaming: function (result) {
 
 			    type = result.responseType;
@@ -653,9 +714,10 @@ define([
 
 				return params;
 
-			},
+        },
+
 			_generateSelect : function (param, hidden) {
-				console.log(param);
+
 				var list = [];
 				array.forEach(param.listOptions, function (p) {
 					var item = {

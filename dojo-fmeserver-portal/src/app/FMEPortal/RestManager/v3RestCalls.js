@@ -1,7 +1,6 @@
 ﻿/*
 dojo-fmeserver-portal
 https://github.com/gavlepeter/dojo-fmeserver-portal
-@version 1.0
 @author Peter Jäderkvist <p.jaderkvist@gmail.com>
 @module FMEPortal/RestManager/v3RestCalls
  */
@@ -28,9 +27,9 @@ define([
 			// Multiple file uploads
 			var paramsString = "";
 			for (i = 0; i < params.paramnames.length; i++) {
-				paramsString += params.paramnames[i] + '=%22%22';
+				paramsString += params.paramnames[i] + '=';
 				for (var f in params.files[i]) {
-					paramsString += paths[i] + '/' + params.files[i][f].name + '%22%20%22';
+					paramsString += paths[i] + '/' + params.files[i][f].name;
 				}
 				paramsString += '&';
 			}
@@ -92,6 +91,44 @@ define([
 
 		},
 
+        _v3_runJobSubmitter: function(repository, workspace, params) {
+
+            var deferred = new Deferred();
+            var requestUrl = this.serverUrl + '/fmejobsubmitter/' + repository + '/' + workspace;
+
+            params = this._toParameterString({
+                "opt_responseformat": "json",
+                "opt_showresult": true,
+                "token": this.token
+            }) + "&" + (params || "");
+
+            this._ajax(requestUrl, "POST", params, 'application/x-www-form-urlencoded;charset=utf-8').then(lang.hitch(this, function(results) {
+                if (results.success) {
+                    deferred.resolve(results);
+                } else {
+                    deferred.resolve(results);
+                }
+            }));
+            return deferred;
+        },
+
+        _v3_submitJob: function(repository, workspace, params) {
+
+            var deferred = new Deferred();
+
+            var requestUrl = this.restUrl + "/transformations/submit/" + repository + "/" + workspace;
+
+            this._ajax(requestUrl, "POST", params, 'application/json').then(lang.hitch(this, function(results) {
+                if (results.success) {
+                    deferred.resolve(results);
+                } else {
+                    deferred.resolve(results);
+                }
+            }));
+            return deferred;
+
+        },
+
 		_v3_submitSyncJob : function (repository, workspace, params) {
 
 			var deferred = new Deferred();
@@ -106,7 +143,7 @@ define([
 				}));
 			return deferred;
 
-		},
+        },
 
 		_v3_generateToken : function (user, password, count, unit) {
 			var deferred = new Deferred();

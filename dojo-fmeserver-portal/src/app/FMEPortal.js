@@ -1,7 +1,7 @@
 ﻿/*
 dojo-fmeserver-portal
 https://github.com/gavlepeter/dojo-fmeserver-portal
-@version 1.0
+@version 1.1.0
 @author Peter Jäderkvist <p.jaderkvist@gmail.com>
 @module FMEPortal
 @license See https://github.com/gavlepeter/dojo-fmeserver-portal/blob/master/License.md
