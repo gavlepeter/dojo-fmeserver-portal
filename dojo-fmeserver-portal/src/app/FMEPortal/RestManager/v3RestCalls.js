@@ -25,14 +25,18 @@ define([
 			var extra = params.params;
 
 			// Multiple file uploads
-			var paramsString = "";
-			for (i = 0; i < params.paramnames.length; i++) {
-				paramsString += params.paramnames[i] + '=';
-				for (var f in params.files[i]) {
-					paramsString += paths[i] + '/' + params.files[i][f].name;
-				}
-				paramsString += '&';
-			}
+            var paramsString = "";
+            for (i = 0; i < params.paramnames.length; i++) {
+                paramsString += params.paramnames[i] + '=' + encodeURI('"');
+                for (var f in params.files[i]) {
+                    paramsString += encodeURI('"' + paths[i] + '/' + params.files[i][f].name + '"');
+                    if (params.files[i].length - 1 > Number(f)) {
+                        paramsString += encodeURI(' ');
+                    }
+                }
+                paramsString += encodeURI('"');
+                paramsString += '&';
+            }
 
 			paramsString += this._toParameterString({
 				"opt_responseformat" : "json",

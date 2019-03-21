@@ -24,7 +24,7 @@
 				}
 			},
 			"SignedInAs" : "You are signed in as ",
-			"TokenSignIn" : "You are signed in using a token",
+			"TokenSignIn" : "You signed in using a token",
 			"Button" : "Sign in",
 			"ButtonSignout" : "Sign out",
 			"Messages" : {

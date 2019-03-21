@@ -408,7 +408,7 @@ define([
 			    this._portalStatus = new Status({
 			        settings: this.options,
                     restManager: this.FMERestManager
-			    }).placeAt(this.options.map.root, "last");
+                }).placeAt(this.options.map ? this.options.map.root : this.domNode, "last");
 
 			},
 

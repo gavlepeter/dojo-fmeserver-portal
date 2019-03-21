@@ -23,7 +23,7 @@
 			}
 		},
 		"SignedInAs" : "Du är inloggad som ",
-		"TokenSignIn" : "Du har loggat med en token",
+		"TokenSignIn" : "Du har loggat in med en token",
 		"Button" : "Logga in",
 		"ButtonSignout" : "Logga ut",
 		"Messages" : {
