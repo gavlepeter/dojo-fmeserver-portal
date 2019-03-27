@@ -229,13 +229,13 @@ Example:
 Drawing tools will automatically appear when a selected workspace have a parameter name defined in the geometry section. The drawn geometry will be passed to the server as a string in the specified format. A map is required.
 
   - **parameter** - The name of the workspace parameter that is used to send a clipping geometry to the server
-  - **format** - The geometry-format that is sent to the server, **geojson** or **esrijson** are supported.
+  - **format** - The geometry-format that is sent to the server, **wkt**, **geojson** or **esrijson** are supported.
 
 Example:
 
     "geometry": {
         "parameter": "GEOM",
-        "format": "geojson"
+        "format": "wkt"
     }
 
 ### Map

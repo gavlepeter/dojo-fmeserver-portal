@@ -40,7 +40,7 @@ define({
 		},
 		"geometry" : {
 			"parameter" : "GEOM", // Workspace parameter for geometry
-			"format" : "geojson" // esrijson or geojson
+			"format" : "wkt" // esrijson, wkt or geojson
 		},
 	},
 	"map" : {

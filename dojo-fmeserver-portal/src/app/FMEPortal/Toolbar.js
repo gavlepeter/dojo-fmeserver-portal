@@ -292,8 +292,8 @@ define([
 					return;
 				}
 
-				// Geojson
-				if (this.options.settings.fme.geometry.format === "geojson") {
+				// WKT
+				if (this.options.settings.fme.geometry.format === "wkt") {
 
                     var geographicGeometry = webMercatorUtils.webMercatorToGeographic(geometry);
                     var isMulti = geographicGeometry.rings.length > 1;
@@ -313,7 +313,34 @@ define([
 
 					this.emit("geometry-change", processedGeometry);
 					return;
-				}
+                }
+
+                // geojson
+                if (this.options.settings.fme.geometry.format === "geojson") {
+
+                    var geographicGeometry = webMercatorUtils.webMercatorToGeographic(geometry);
+                    var isMulti = geographicGeometry.rings.length > 1;
+
+                    var geometry = {
+                        "type": isMulti ? "MultiPolygon" : "Polygon",
+                        "coordinates": []
+                    };
+
+                    geographicGeometry.rings.forEach(function (ring) {
+                        if (isMulti) {
+                            geometry.coordinates.push([ring]);
+                        } else {
+                            geometry.coordinates.push(ring);
+                        }                       
+                    });
+
+                    processedGeometry = JSON.stringify(geometry);
+                    this.emit("geometry-change", processedGeometry);
+					return;
+
+                }
+
+
 
 			},
 
